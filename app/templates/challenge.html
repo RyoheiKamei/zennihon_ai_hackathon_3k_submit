@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>🎲 エピソードチャレンジ</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 2em;
+      font-family: "Helvetica Neue", sans-serif;
+      background-color: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.8em;
+      margin-bottom: 1em;
+    }
+
+    h2 {
+      font-size: 1.5em;
+      background: linear-gradient(135deg, #ff5f6d, #ffc371);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1.5em;
+    }
+
+    p {
+      font-size: 1.1em;
+      color: #ccc;
+      margin-bottom: 2em;
+    }
+
+    .record-btn {
+      background: linear-gradient(135deg, #9b59b6, #e91e63);
+      color: white;
+      padding: 0.8em 2em;
+      font-size: 1em;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .record-btn:hover {
+      background: linear-gradient(135deg, #8e44ad, #c2185b);
+      transform: scale(1.05);
+    }
+
+    .back-link {
+      margin-top: 3em;
+      text-decoration: none;
+      color: #aaa;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .back-link:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎲 今日のチャレンジテーマ</h1>
+  <h2>「{{ theme }}」</h2>
+
+  <p>このテーマに関する出来事を思い出して、録音にチャレンジ！</p>
+
+  <form method="GET" action="/record_challenge">
+    <button type="submit" class="record-btn">🎙 録音を始める</button>
+  </form>
+
+  <a href="/" class="back-link">← ホームへ戻る</a>
+</body>
+</html>

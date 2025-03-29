@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>検索結果</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 2em;
+      font-family: "Helvetica Neue", sans-serif;
+      background-color: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 1.6em;
+      margin-bottom: 2em;
+      color: #f39c12;
+    }
+
+    .episode-container {
+      max-width: 800px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5em;
+    }
+
+    .episode-card {
+      background: #1e1e1e;
+      padding: 1.5em;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .category {
+      font-size: 0.9em;
+      color: #aaa;
+      margin-bottom: 0.5em;
+    }
+
+    .episode-text {
+      font-size: 1.1em;
+      color: #eee;
+      white-space: pre-wrap;
+    }
+
+    .action-button {
+      padding: 0.5em 1em;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95em;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      margin-top: 1em;
+      margin-right: 0.5em;
+    }
+
+    .edit-button {
+      background-color: #3498db;
+    }
+
+    .edit-button:hover {
+      background-color: #2980b9;
+      transform: scale(1.05);
+    }
+
+    .delete-button {
+      background-color: #e74c3c;
+    }
+
+    .delete-button:hover {
+      background-color: #c0392b;
+      transform: scale(1.05);
+    }
+
+    .back-link {
+      margin-top: 3em;
+      text-decoration: none;
+      color: #aaa;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .back-link:hover {
+      color: #fff;
+    }
+
+    .no-result {
+      color: #888;
+      text-align: center;
+      margin-top: 2em;
+    }
+  </style>
+</head>
+<body>
+  <a href="/" class="back-link">← ホームに戻る</a>
+  <h1>🔍 「{{ query }}」の検索結果</h1>
+
+  <div class="episode-container">
+    {% if results %}
+      {% for ep in results %}
+        <div class="episode-card">
+          <div class="category">📅 投稿日: {{ ep.date }} / カテゴリ: {{ ep.category }}</div>
+          <div class="episode-text">{{ ep.episode }}</div>
+
+            {% if ep.audio_path %}
+            <div style="margin-top: 0.7em;">
+              🎧 元の録音:
+              <audio controls>
+                <source src="{{ url_for('static', filename=ep.audio_path.split('static/')[-1]) }}" type="audio/webm">
+                このブラウザでは音声再生に対応していません。
+              </audio>
+            </div>
+            {% endif %}
+
+          <form method="POST" action="/delete/{{ ep.id }}" onsubmit="return confirm('このエピソードを削除しますか？');">
+            <button type="submit" class="action-button delete-button" title="このエピソードを削除します">
+              🗑 削除
+            </button>
+          </form>
+
+          <!-- <form method="GET" action="/edit/{{ ep.id }}">
+            <button type="submit" class="action-button edit-button" title="このエピソードを編集する">
+              ✏️ 編集
+            </button>
+          </form> -->
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="no-result">一致するエピソードが見つかりませんでした。</p>
+    {% endif %}
+  </div>
+
+  <a href="/" class="back-link">← ホームに戻る</a>
+</body>
+</html>

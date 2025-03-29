@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>カテゴリ管理</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 2em;
+      font-family: "Helvetica Neue", sans-serif;
+      background-color: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 1.8em;
+      margin-bottom: 1em;
+    }
+
+    h3 {
+      margin-top: 2em;
+      color: #ccc;
+    }
+
+    form {
+      margin-top: 1em;
+      display: flex;
+      gap: 1em;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    input[type="text"] {
+      padding: 0.6em 1em;
+      border-radius: 8px;
+      border: none;
+      font-size: 1em;
+      width: 250px;
+      background: #1e1e1e;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    button {
+      background: linear-gradient(135deg, #00c3ff, #2f86ff);
+      border: none;
+      border-radius: 8px;
+      padding: 0.6em 1.2em;
+      color: white;
+      font-weight: bold;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, #009ada, #2968c8);
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 1.5em;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    li {
+      background: #1e1e1e;
+      padding: 1em;
+      margin-bottom: 1em;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .delete-button {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      padding: 0.4em 0.8em;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .delete-button:hover {
+      background: linear-gradient(135deg, #c0392b, #a93226);
+      transform: scale(1.05);
+    }
+
+    .back-link {
+      margin-top: 3em;
+      text-decoration: none;
+      color: #aaa;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .back-link:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <a class="back-link" href="/">← ホームに戻る</a>
+  <h1>📂 カテゴリ管理</h1>
+
+  <h3>カテゴリを追加</h3>
+  <form method="POST">
+    <input type="text" name="new_category" placeholder="新しいカテゴリ名" required>
+    <button type="submit">＋ 追加</button>
+  </form>
+
+  <h3>既存のカテゴリ一覧</h3>
+  <ul>
+    {% for cat in categories %}
+      <li>
+        {{ cat }}
+        <form method="POST" action="/delete_category/{{ cat }}"
+              onsubmit="return confirm('「{{ cat }}」カテゴリを削除すると、その中のエピソードもすべて削除されます。よろしいですか？');">
+          <button type="submit" class="delete-button">🗑 削除</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <a href="/" class="back-link">← ホームに戻る</a>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>カテゴリを選択</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 2em;
+      font-family: "Helvetica Neue", sans-serif;
+      background-color: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2, h3 {
+      color: #fff;
+      text-align: center;
+      margin-top: 1em;
+    }
+
+    p {
+      max-width: 800px;
+      line-height: 1.6em;
+      font-size: 1.1em;
+      color: #eee;
+      background: #1e1e1e;
+      padding: 1.2em;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      white-space: pre-wrap;
+    }
+
+    textarea {
+      width: 100%;
+      max-width: 800px;
+      padding: 1em;
+      border: none;
+      border-radius: 12px;
+      font-size: 1em;
+      background: #1e1e1e;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      resize: vertical;
+    }
+
+    button {
+      background: linear-gradient(135deg, #ff5f6d, #ffc371);
+      border: none;
+      border-radius: 8px;
+      padding: 0.6em 1.2em;
+      color: white;
+      font-weight: bold;
+      font-size: 1em;
+      cursor: pointer;
+      margin: 0.5em;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 95, 109, 0.5);
+    }
+
+    .category-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8em;
+      margin: 1em 0 2em;
+    }
+
+    .form-block {
+      margin-top: 2em;
+      text-align: center;
+    }
+
+    input[type="text"] {
+      padding: 0.6em 1em;
+      border-radius: 8px;
+      border: none;
+      font-size: 1em;
+      width: 250px;
+      margin-right: 0.5em;
+      background: #1e1e1e;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .spinner {
+      border: 6px solid #444;
+      border-top: 6px solid #ff5f6d;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1em;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #loading {
+      display: none;
+      text-align: center;
+      margin-top: 2em;
+      color: #aaa;
+    }
+
+    hr {
+      border: 1px solid #333;
+      width: 80%;
+      margin: 3em auto;
+    }
+  </style>
+</head>
+<body>
+  <h2>✨ 生成されたエピソード</h2>
+  <p>{{ episode }}</p>
+
+  <hr>
+
+  <!-- 再生成ローディング -->
+  <div id="loading">
+    <div class="spinner"></div>
+    <p>エピソード再生成中... 少々お待ちください</p>
+  </div>
+
+  <h3>🎧 入力された音声の文字起こし（修正可能）</h3>
+  <form method="POST" action="/regenerate" onsubmit="showLoading()">
+    <textarea name="raw_text" rows="6" required>{{ raw_text }}</textarea>
+    <br>
+    <button type="submit">🔁 この内容でもう一度エピソードを生成</button>
+  </form>
+
+  <hr>
+
+  <h3>📁 既存カテゴリから選んで保存：</h3>
+  <form method="POST" action="/save">
+    <div class="category-buttons">
+      {% for cat in categories %}
+        <button type="submit" name="category" value="{{ cat }}">{{ cat }}</button>
+      {% endfor %}
+    </div>
+  </form>
+
+  <hr>
+
+  <h3>🆕 新しいカテゴリで保存：</h3>
+  <form method="POST" action="/save" class="form-block">
+    <input type="text" name="new_category" placeholder="カテゴリ名を入力" required>
+    <button type="submit">＋ 保存</button>
+  </form>
+
+  <form method="POST" action="/retry" class="form-block">
+    <button type="submit">🔁 録音をやり直す</button>
+  </form>
+
+  <script>
+    function showLoading() {
+      document.getElementById("loading").style.display = "block";
+      const form = document.querySelector("form[action='/regenerate']");
+      form.querySelector("button").disabled = true;
+      form.querySelector("textarea").readOnly = true;
+    }
+  </script>
+</body>
+</html>

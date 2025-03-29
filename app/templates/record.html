@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>録音中...</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 2em;
+      font-family: "Helvetica Neue", sans-serif;
+      background-color: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 2em;
+      background: linear-gradient(135deg, #ff5f6d, #ffc371);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    #stopBtn {
+      background: linear-gradient(135deg, #3498db, #2ecc71);
+      border: none;
+      border-radius: 50px;
+      padding: 0.8em 2em;
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    #stopBtn:hover {
+      background: linear-gradient(135deg, #2980b9, #27ae60);
+      transform: scale(1.05);
+    }
+
+    .spinner {
+      border: 6px solid #333;
+      border-top: 6px solid #ff5f6d;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1em;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #loading {
+      display: none;
+      margin-top: 3em;
+    }
+
+    #loading p {
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎙️ 録音中...</h1>
+
+  <button id="stopBtn">🛑 録音完了</button>
+
+  <div id="loading">
+    <div class="spinner"></div>
+    <p>エピソード生成中... 少々お待ちください</p>
+  </div>
+
+  <script>
+    let mediaRecorder;
+    let audioChunks = [];
+
+    async function startRecording() {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.start();
+
+      mediaRecorder.ondataavailable = e => {
+        audioChunks.push(e.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        showLoading();
+
+        const blob = new Blob(audioChunks, { type: 'audio/webm' });
+        const formData = new FormData();
+        formData.append('audio', blob, 'recording.webm');
+
+        try {
+          const response = await fetch('/transcribe', {
+            method: 'POST',
+            body: formData
+          });
+
+          const data = await response.json();
+
+          if (data.redirect) {
+            window.location.href = data.redirect;
+          } else {
+            alert("エピソード生成失敗: " + (data.error || "不明なエラー"));
+          }
+        } catch (err) {
+          alert("通信エラー：" + err.message);
+        }
+      };
+
+      mediaRecorder.onerror = err => {
+        console.error("録音エラー:", err);
+        alert("録音中にエラーが発生しました。");
+      };
+    }
+
+    function showLoading() {
+      document.getElementById("loading").style.display = "block";
+    }
+
+    document.getElementById('stopBtn').addEventListener('click', () => {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+      }
+    });
+
+    startRecording();
+  </script>
+</body>
+</html>

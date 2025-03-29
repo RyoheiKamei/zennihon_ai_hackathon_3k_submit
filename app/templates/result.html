@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>保存完了 🎉</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 2em;
+      font-family: "Helvetica Neue", sans-serif;
+      background-color: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 1.8em;
+      margin-bottom: 1em;
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .episode-box {
+      background: #1e1e1e;
+      padding: 1.5em;
+      border-radius: 12px;
+      max-width: 800px;
+      width: 100%;
+      color: #eee;
+      font-size: 1.1em;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      white-space: pre-wrap;
+      margin-bottom: 2em;
+    }
+
+    .back-link {
+      text-decoration: none;
+      color: #aaa;
+      font-weight: bold;
+      font-size: 1em;
+      transition: color 0.3s ease;
+    }
+
+    .back-link:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <h2>🎉 エピソードが「{{ category }}」に保存されました！</h2>
+  <div class="episode-box">
+    {{ episode }}
+  </div>
+  <a href="/" class="back-link">← ホームに戻る</a>
+</body>
+</html>
